@@ -1,0 +1,81 @@
+service: serverless-crud
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  environment:
+    DYNAMO_TABLE_NAME: Books
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMO_TABLE_NAME}"
+
+functions:
+  create:
+    handler: Method/books-create
+    events:
+      - http:
+          path: book/create
+          method: post
+          cors: true
+  readAll:
+    handler: Method/books-read-all
+    events:
+      - http:
+          path: books/get
+          method: get
+          cors: true
+  readOne:
+    handler: Method/books-read-one
+    events:
+      - http:
+          path: books/name
+          method: get
+          cors: true
+  update:
+    handler: Method/books-update
+    events:
+      - http:
+          path: book/name
+          method: put
+          cors: true
+  delete:
+    handler: Method/books-delete
+    events:
+      - http:
+          path: book/name
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DYNAMO_TABLE_NAME}
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true    
