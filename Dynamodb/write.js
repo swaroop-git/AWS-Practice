@@ -1,10 +1,10 @@
-require('dotenv').config();
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 let awsConfig = {
     "region": "us-east-1",
     "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
-    "accessKeyId": "AKIAS7TZUBTH7KA3QJ7M", "secretAccessKey": "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"
+    "accessKeyId": "AKIAS7TZUBTH4AYOY7VN", "secretAccessKey": "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"
 };
 AWS.config.update(awsConfig);
 
@@ -19,8 +19,7 @@ var params = {
   Item: {
     'Names' : {S: 'Psychology of money'},
     'Author' : {S: 'Morgan Housel'},
-    'Catagory':{S:'Habit'},
-    'sst':{S:'hghg'}
+    'Catagory':{S:'Hhhh'},
   }
 };
 

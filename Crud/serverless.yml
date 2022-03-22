@@ -1,81 +1,70 @@
-service: serverless-crud
+service: Crud
+
+custom:
+  settings:
+    POSTS_TABLE: posts
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs8.10
   region: us-east-1
-  environment:
-    DYNAMO_TABLE_NAME: Books
-  stage: dev
+  environment: ${self:custom.settings}
   iamRoleStatements:
-    - Effect: Allow
-      Action:
+   - Effect: "Allow"
+     Action:
         - dynamodb:DescribeTable
-        - dynamodb:Query
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMO_TABLE_NAME}"
+     Resource:
+      - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.POSTS_TABLE}"
 
 functions:
-  create:
-    handler: Method/books-create
+  createPost:
+    handler: Methods/createBooks.createPost
     events:
-      - http:
-          path: book/create
-          method: post
-          cors: true
-  readAll:
-    handler: Method/books-read-all
+    - http:
+        path: /post
+        method: post
+  getAllPosts:
+    handler: Methods/getBooks.getAllPosts
     events:
-      - http:
-          path: books/get
-          method: get
-          cors: true
-  readOne:
-    handler: Method/books-read-one
+    - http:
+        path: /posts
+        method: get
+  getPost:
+    handler: Methods/getBook.getPost
     events:
-      - http:
-          path: books/name
-          method: get
-          cors: true
-  update:
-    handler: Method/books-update
+    - http:
+        path: /post/{id}
+        method: get
+  updatePost:
+    handler: Methods/updateBook.updatePost
     events:
-      - http:
-          path: book/name
-          method: put
-          cors: true
-  delete:
-    handler: Method/books-delete
+    - http:
+        path: /post/{id}
+        method: put
+  deletePost:
+    handler: Method/deleteBook.deletePost
     events:
-      - http:
-          path: book/name
-          method: delete
-          cors: true
+    - http:
+        path: /post/{id}
+        method: delete
 
 resources:
   Resources:
-    TodosDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+    PostsTable:
+      Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
+        - AttributeName: "id"
+          AttributeType: "S"
         KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
+        - AttributeName: "id"
+          KeyType: "HASH"
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-        TableName: ${self:provider.environment.DYNAMO_TABLE_NAME}
-plugins:
-  - serverless-offline
-custom:
-  serverless-offline:
-    noPrependStageInUrl: true    
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.POSTS_TABLE}

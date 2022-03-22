@@ -1,32 +1,31 @@
 {
   "service": {
-    "service": "serverless-crud",
+    "service": "Crud",
     "serviceObject": {
-      "name": "serverless-crud"
+      "name": "Crud"
     },
     "provider": {
       "name": "aws",
-      "runtime": "nodejs12.x",
+      "runtime": "nodejs8.10",
       "region": "us-east-1",
       "environment": {
-        "DYNAMO_TABLE_NAME": "Books"
+        "POSTS_TABLE": "posts"
       },
-      "stage": "dev",
       "iamRoleStatements": [
         {
           "Effect": "Allow",
           "Action": [
             "dynamodb:DescribeTable",
-            "dynamodb:Query",
             "dynamodb:Scan",
             "dynamodb:GetItem",
             "dynamodb:PutItem",
             "dynamodb:UpdateItem",
             "dynamodb:DeleteItem"
           ],
-          "Resource": "arn:aws:dynamodb:us-east-1:*:table/Books"
+          "Resource": "arn:aws:dynamodb:us-east-1:*:table/posts"
         }
       ],
+      "stage": "dev",
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
@@ -101,34 +100,34 @@
               }
             }
           },
-          "CreateLogGroup": {
+          "CreatePostLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-crud-dev-create"
+              "LogGroupName": "/aws/lambda/Crud-dev-createPost"
             }
           },
-          "ReadAllLogGroup": {
+          "GetAllPostsLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-crud-dev-readAll"
+              "LogGroupName": "/aws/lambda/Crud-dev-getAllPosts"
             }
           },
-          "ReadOneLogGroup": {
+          "GetPostLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-crud-dev-readOne"
+              "LogGroupName": "/aws/lambda/Crud-dev-getPost"
             }
           },
-          "UpdateLogGroup": {
+          "UpdatePostLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-crud-dev-update"
+              "LogGroupName": "/aws/lambda/Crud-dev-updatePost"
             }
           },
-          "DeleteLogGroup": {
+          "DeletePostLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/serverless-crud-dev-delete"
+              "LogGroupName": "/aws/lambda/Crud-dev-deletePost"
             }
           },
           "IamRoleLambdaExecution": {
@@ -156,7 +155,7 @@
                     "Fn::Join": [
                       "-",
                       [
-                        "serverless-crud",
+                        "Crud",
                         "dev",
                         "lambda"
                       ]
@@ -173,7 +172,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-crud-dev*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Crud-dev*:*"
                           }
                         ]
                       },
@@ -184,7 +183,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-crud-dev*:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/Crud-dev*:*:*"
                           }
                         ]
                       },
@@ -200,7 +199,7 @@
                 "Fn::Join": [
                   "-",
                   [
-                    "serverless-crud",
+                    "Crud",
                     "dev",
                     {
                       "Ref": "AWS::Region"
@@ -211,23 +210,23 @@
               }
             }
           },
-          "CreateLambdaFunction": {
+          "CreatePostLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z/serverless-crud.zip"
+                "S3Key": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z/Crud.zip"
               },
-              "Handler": "Crud/create.createpost",
-              "Runtime": "nodejs12.x",
-              "FunctionName": "serverless-crud-dev-create",
+              "Handler": "Methods/createBooks.createPost",
+              "Runtime": "nodejs8.10",
+              "FunctionName": "Crud-dev-createPost",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "DYNAMO_TABLE_NAME": "Books"
+                  "POSTS_TABLE": "posts"
                 }
               },
               "Role": {
@@ -238,26 +237,26 @@
               }
             },
             "DependsOn": [
-              "CreateLogGroup"
+              "CreatePostLogGroup"
             ]
           },
-          "ReadAllLambdaFunction": {
+          "GetAllPostsLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z/serverless-crud.zip"
+                "S3Key": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z/Crud.zip"
               },
-              "Handler": "Crud/list.listpost",
-              "Runtime": "nodejs12.x",
-              "FunctionName": "serverless-crud-dev-readAll",
+              "Handler": "Methods/getBooks.getAllPosts",
+              "Runtime": "nodejs8.10",
+              "FunctionName": "Crud-dev-getAllPosts",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "DYNAMO_TABLE_NAME": "Books"
+                  "POSTS_TABLE": "posts"
                 }
               },
               "Role": {
@@ -268,26 +267,26 @@
               }
             },
             "DependsOn": [
-              "ReadAllLogGroup"
+              "GetAllPostsLogGroup"
             ]
           },
-          "ReadOneLambdaFunction": {
+          "GetPostLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z/serverless-crud.zip"
+                "S3Key": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z/Crud.zip"
               },
-              "Handler": "Crud/get.getpost",
-              "Runtime": "nodejs12.x",
-              "FunctionName": "serverless-crud-dev-readOne",
+              "Handler": "Methods/getBook.getPost",
+              "Runtime": "nodejs8.10",
+              "FunctionName": "Crud-dev-getPost",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "DYNAMO_TABLE_NAME": "Books"
+                  "POSTS_TABLE": "posts"
                 }
               },
               "Role": {
@@ -298,26 +297,26 @@
               }
             },
             "DependsOn": [
-              "ReadOneLogGroup"
+              "GetPostLogGroup"
             ]
           },
-          "UpdateLambdaFunction": {
+          "UpdatePostLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z/serverless-crud.zip"
+                "S3Key": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z/Crud.zip"
               },
-              "Handler": "Crud/update.updatepost",
-              "Runtime": "nodejs12.x",
-              "FunctionName": "serverless-crud-dev-update",
+              "Handler": "Methods/updateBook.updatePost",
+              "Runtime": "nodejs8.10",
+              "FunctionName": "Crud-dev-updatePost",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "DYNAMO_TABLE_NAME": "Books"
+                  "POSTS_TABLE": "posts"
                 }
               },
               "Role": {
@@ -328,26 +327,26 @@
               }
             },
             "DependsOn": [
-              "UpdateLogGroup"
+              "UpdatePostLogGroup"
             ]
           },
-          "DeleteLambdaFunction": {
+          "DeletePostLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z/serverless-crud.zip"
+                "S3Key": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z/Crud.zip"
               },
-              "Handler": "Crud/delete.deletePost",
-              "Runtime": "nodejs12.x",
-              "FunctionName": "serverless-crud-dev-delete",
+              "Handler": "Method/deleteBook.deletePost",
+              "Runtime": "nodejs8.10",
+              "FunctionName": "Crud-dev-deletePost",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "DYNAMO_TABLE_NAME": "Books"
+                  "POSTS_TABLE": "posts"
                 }
               },
               "Role": {
@@ -358,63 +357,63 @@
               }
             },
             "DependsOn": [
-              "DeleteLogGroup"
+              "DeletePostLogGroup"
             ]
           },
-          "CreateLambdaVersionbiaE52j9Q0W8XR9DIi9mO5gvLdvYbqpi2FGhitW0RQQ": {
+          "CreatePostLambdaVersionuuai02yXSNEqgB4kvJEj7eDLA2p2Yo3660YlR815C0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "CreateLambdaFunction"
+                "Ref": "CreatePostLambdaFunction"
               },
-              "CodeSha256": "b39ARbxqkffDhEW4xOBXVfXpWX3Hs/5Jk1viZCv5G/k="
+              "CodeSha256": "Gct9JPGWxRjM13dn1HDKkJIYbviQcazeGc+JoYGFsqk="
             }
           },
-          "ReadAllLambdaVersionOg26FoxywG7JZN75atjHyb15evlJAsLLaUVsnkwQ": {
+          "GetAllPostsLambdaVersionfACeWmYeMMYmE2gQK8FDO16STJIu1L8oHZKyz6PuM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "ReadAllLambdaFunction"
+                "Ref": "GetAllPostsLambdaFunction"
               },
-              "CodeSha256": "b39ARbxqkffDhEW4xOBXVfXpWX3Hs/5Jk1viZCv5G/k="
+              "CodeSha256": "Gct9JPGWxRjM13dn1HDKkJIYbviQcazeGc+JoYGFsqk="
             }
           },
-          "ReadOneLambdaVersionlDZzLN3Ce0Dg2sYe91kfH5b2QxoNcGvL7JtO17qBZQ": {
+          "GetPostLambdaVersionTWV9N5APKkzBUCybGDz6OwSOPb5eoiJ6znCQd7vNUE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "ReadOneLambdaFunction"
+                "Ref": "GetPostLambdaFunction"
               },
-              "CodeSha256": "b39ARbxqkffDhEW4xOBXVfXpWX3Hs/5Jk1viZCv5G/k="
+              "CodeSha256": "Gct9JPGWxRjM13dn1HDKkJIYbviQcazeGc+JoYGFsqk="
             }
           },
-          "UpdateLambdaVersionAAnZ3AmxjmME6243wRWh6iTU1vdBRnRCP7cc3PJwGIc": {
+          "UpdatePostLambdaVersionBqsFqBmGqOSphUuwtkONmMtw5sm5YguLJJUtPM2sBn0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "UpdateLambdaFunction"
+                "Ref": "UpdatePostLambdaFunction"
               },
-              "CodeSha256": "b39ARbxqkffDhEW4xOBXVfXpWX3Hs/5Jk1viZCv5G/k="
+              "CodeSha256": "Gct9JPGWxRjM13dn1HDKkJIYbviQcazeGc+JoYGFsqk="
             }
           },
-          "DeleteLambdaVersionmYQ4tGysnNHgQ4xfMbqkR9MKd3vIVkT8ppLYCxSPdU": {
+          "DeletePostLambdaVersion59yhDWurcNo3nmf8lSlm5s9kitRpV4cb13VR9B94EU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "DeleteLambdaFunction"
+                "Ref": "DeletePostLambdaFunction"
               },
-              "CodeSha256": "b39ARbxqkffDhEW4xOBXVfXpWX3Hs/5Jk1viZCv5G/k="
+              "CodeSha256": "Gct9JPGWxRjM13dn1HDKkJIYbviQcazeGc+JoYGFsqk="
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "dev-serverless-crud",
+              "Name": "dev-Crud",
               "EndpointConfiguration": {
                 "Types": [
                   "EDGE"
@@ -423,7 +422,7 @@
               "Policy": ""
             }
           },
-          "ApiGatewayResourceBook": {
+          "ApiGatewayResourcePost": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
@@ -432,37 +431,25 @@
                   "RootResourceId"
                 ]
               },
-              "PathPart": "book",
+              "PathPart": "post",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBookCreate": {
+          "ApiGatewayResourcePostIdVar": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
-                "Ref": "ApiGatewayResourceBook"
+                "Ref": "ApiGatewayResourcePost"
               },
-              "PathPart": "create",
+              "PathPart": "{id}",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBookName": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-              "ParentId": {
-                "Ref": "ApiGatewayResourceBook"
-              },
-              "PathPart": "name",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayResourceBooks": {
+          "ApiGatewayResourcePosts": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
@@ -471,223 +458,19 @@
                   "RootResourceId"
                 ]
               },
-              "PathPart": "books",
+              "PathPart": "posts",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayResourceBooksGet": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-              "ParentId": {
-                "Ref": "ApiGatewayResourceBooks"
-              },
-              "PathPart": "get",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayResourceBooksName": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-              "ParentId": {
-                "Ref": "ApiGatewayResourceBooks"
-              },
-              "PathPart": "name",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodBookCreateOptions": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "AuthorizationType": "NONE",
-              "HttpMethod": "OPTIONS",
-              "MethodResponses": [
-                {
-                  "StatusCode": "200",
-                  "ResponseParameters": {
-                    "method.response.header.Access-Control-Allow-Origin": true,
-                    "method.response.header.Access-Control-Allow-Headers": true,
-                    "method.response.header.Access-Control-Allow-Methods": true
-                  },
-                  "ResponseModels": {}
-                }
-              ],
-              "RequestParameters": {},
-              "Integration": {
-                "Type": "MOCK",
-                "RequestTemplates": {
-                  "application/json": "{statusCode:200}"
-                },
-                "ContentHandling": "CONVERT_TO_TEXT",
-                "IntegrationResponses": [
-                  {
-                    "StatusCode": "200",
-                    "ResponseParameters": {
-                      "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
-                    },
-                    "ResponseTemplates": {
-                      "application/json": ""
-                    }
-                  }
-                ]
-              },
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceBookCreate"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodBooksGetOptions": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "AuthorizationType": "NONE",
-              "HttpMethod": "OPTIONS",
-              "MethodResponses": [
-                {
-                  "StatusCode": "200",
-                  "ResponseParameters": {
-                    "method.response.header.Access-Control-Allow-Origin": true,
-                    "method.response.header.Access-Control-Allow-Headers": true,
-                    "method.response.header.Access-Control-Allow-Methods": true
-                  },
-                  "ResponseModels": {}
-                }
-              ],
-              "RequestParameters": {},
-              "Integration": {
-                "Type": "MOCK",
-                "RequestTemplates": {
-                  "application/json": "{statusCode:200}"
-                },
-                "ContentHandling": "CONVERT_TO_TEXT",
-                "IntegrationResponses": [
-                  {
-                    "StatusCode": "200",
-                    "ResponseParameters": {
-                      "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
-                    },
-                    "ResponseTemplates": {
-                      "application/json": ""
-                    }
-                  }
-                ]
-              },
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceBooksGet"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodBooksNameOptions": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "AuthorizationType": "NONE",
-              "HttpMethod": "OPTIONS",
-              "MethodResponses": [
-                {
-                  "StatusCode": "200",
-                  "ResponseParameters": {
-                    "method.response.header.Access-Control-Allow-Origin": true,
-                    "method.response.header.Access-Control-Allow-Headers": true,
-                    "method.response.header.Access-Control-Allow-Methods": true
-                  },
-                  "ResponseModels": {}
-                }
-              ],
-              "RequestParameters": {},
-              "Integration": {
-                "Type": "MOCK",
-                "RequestTemplates": {
-                  "application/json": "{statusCode:200}"
-                },
-                "ContentHandling": "CONVERT_TO_TEXT",
-                "IntegrationResponses": [
-                  {
-                    "StatusCode": "200",
-                    "ResponseParameters": {
-                      "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
-                    },
-                    "ResponseTemplates": {
-                      "application/json": ""
-                    }
-                  }
-                ]
-              },
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceBooksName"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodBookNameOptions": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "AuthorizationType": "NONE",
-              "HttpMethod": "OPTIONS",
-              "MethodResponses": [
-                {
-                  "StatusCode": "200",
-                  "ResponseParameters": {
-                    "method.response.header.Access-Control-Allow-Origin": true,
-                    "method.response.header.Access-Control-Allow-Headers": true,
-                    "method.response.header.Access-Control-Allow-Methods": true
-                  },
-                  "ResponseModels": {}
-                }
-              ],
-              "RequestParameters": {},
-              "Integration": {
-                "Type": "MOCK",
-                "RequestTemplates": {
-                  "application/json": "{statusCode:200}"
-                },
-                "ContentHandling": "CONVERT_TO_TEXT",
-                "IntegrationResponses": [
-                  {
-                    "StatusCode": "200",
-                    "ResponseParameters": {
-                      "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT'"
-                    },
-                    "ResponseTemplates": {
-                      "application/json": ""
-                    }
-                  }
-                ]
-              },
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceBookName"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodBookCreatePost": {
+          "ApiGatewayMethodPostPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "POST",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBookCreate"
+                "Ref": "ApiGatewayResourcePost"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -712,7 +495,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "CreateLambdaFunction",
+                          "CreatePostLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -724,16 +507,16 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "CreateLambdaPermissionApiGateway"
+              "CreatePostLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodBooksGetGet": {
+          "ApiGatewayMethodPostsGet": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "GET",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBooksGet"
+                "Ref": "ApiGatewayResourcePosts"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -758,7 +541,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "ReadAllLambdaFunction",
+                          "GetAllPostsLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -770,16 +553,16 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "ReadAllLambdaPermissionApiGateway"
+              "GetAllPostsLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodBooksNameGet": {
+          "ApiGatewayMethodPostIdVarGet": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "GET",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBooksName"
+                "Ref": "ApiGatewayResourcePostIdVar"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -804,7 +587,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "ReadOneLambdaFunction",
+                          "GetPostLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -816,16 +599,16 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "ReadOneLambdaPermissionApiGateway"
+              "GetPostLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodBookNamePut": {
+          "ApiGatewayMethodPostIdVarPut": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "PUT",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBookName"
+                "Ref": "ApiGatewayResourcePostIdVar"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -850,7 +633,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "UpdateLambdaFunction",
+                          "UpdatePostLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -862,16 +645,16 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "UpdateLambdaPermissionApiGateway"
+              "UpdatePostLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodBookNameDelete": {
+          "ApiGatewayMethodPostIdVarDelete": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "DELETE",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceBookName"
+                "Ref": "ApiGatewayResourcePostIdVar"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -896,7 +679,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "DeleteLambdaFunction",
+                          "DeletePostLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -908,10 +691,10 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "DeleteLambdaPermissionApiGateway"
+              "DeletePostLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1647801754194": {
+          "ApiGatewayDeployment1647971874022": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -920,23 +703,19 @@
               "StageName": "dev"
             },
             "DependsOn": [
-              "ApiGatewayMethodBookCreateOptions",
-              "ApiGatewayMethodBooksGetOptions",
-              "ApiGatewayMethodBooksNameOptions",
-              "ApiGatewayMethodBookNameOptions",
-              "ApiGatewayMethodBookCreatePost",
-              "ApiGatewayMethodBooksGetGet",
-              "ApiGatewayMethodBooksNameGet",
-              "ApiGatewayMethodBookNamePut",
-              "ApiGatewayMethodBookNameDelete"
+              "ApiGatewayMethodPostPost",
+              "ApiGatewayMethodPostsGet",
+              "ApiGatewayMethodPostIdVarGet",
+              "ApiGatewayMethodPostIdVarPut",
+              "ApiGatewayMethodPostIdVarDelete"
             ]
           },
-          "CreateLambdaPermissionApiGateway": {
+          "CreatePostLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "CreateLambdaFunction",
+                  "CreatePostLambdaFunction",
                   "Arn"
                 ]
               },
@@ -968,12 +747,12 @@
               }
             }
           },
-          "ReadAllLambdaPermissionApiGateway": {
+          "GetAllPostsLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "ReadAllLambdaFunction",
+                  "GetAllPostsLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1005,12 +784,12 @@
               }
             }
           },
-          "ReadOneLambdaPermissionApiGateway": {
+          "GetPostLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "ReadOneLambdaFunction",
+                  "GetPostLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1042,12 +821,12 @@
               }
             }
           },
-          "UpdateLambdaPermissionApiGateway": {
+          "UpdatePostLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "UpdateLambdaFunction",
+                  "UpdatePostLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1079,12 +858,12 @@
               }
             }
           },
-          "DeleteLambdaPermissionApiGateway": {
+          "DeletePostLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "DeleteLambdaFunction",
+                  "DeletePostLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1116,9 +895,8 @@
               }
             }
           },
-          "TodosDynamoDbTable": {
+          "PostsTable": {
             "Type": "AWS::DynamoDB::Table",
-            "DeletionPolicy": "Retain",
             "Properties": {
               "AttributeDefinitions": [
                 {
@@ -1136,7 +914,7 @@
                 "ReadCapacityUnits": 1,
                 "WriteCapacityUnits": 1
               },
-              "TableName": "Books"
+              "TableName": "posts"
             }
           }
         },
@@ -1146,52 +924,52 @@
               "Ref": "ServerlessDeploymentBucket"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-ServerlessDeploymentBucketName"
+              "Name": "sls-Crud-dev-ServerlessDeploymentBucketName"
             }
           },
-          "CreateLambdaFunctionQualifiedArn": {
+          "CreatePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionbiaE52j9Q0W8XR9DIi9mO5gvLdvYbqpi2FGhitW0RQQ"
+              "Ref": "CreatePostLambdaVersionuuai02yXSNEqgB4kvJEj7eDLA2p2Yo3660YlR815C0"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-CreateLambdaFunctionQualifiedArn"
+              "Name": "sls-Crud-dev-CreatePostLambdaFunctionQualifiedArn"
             }
           },
-          "ReadAllLambdaFunctionQualifiedArn": {
+          "GetAllPostsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ReadAllLambdaVersionOg26FoxywG7JZN75atjHyb15evlJAsLLaUVsnkwQ"
+              "Ref": "GetAllPostsLambdaVersionfACeWmYeMMYmE2gQK8FDO16STJIu1L8oHZKyz6PuM"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-ReadAllLambdaFunctionQualifiedArn"
+              "Name": "sls-Crud-dev-GetAllPostsLambdaFunctionQualifiedArn"
             }
           },
-          "ReadOneLambdaFunctionQualifiedArn": {
+          "GetPostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ReadOneLambdaVersionlDZzLN3Ce0Dg2sYe91kfH5b2QxoNcGvL7JtO17qBZQ"
+              "Ref": "GetPostLambdaVersionTWV9N5APKkzBUCybGDz6OwSOPb5eoiJ6znCQd7vNUE"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-ReadOneLambdaFunctionQualifiedArn"
+              "Name": "sls-Crud-dev-GetPostLambdaFunctionQualifiedArn"
             }
           },
-          "UpdateLambdaFunctionQualifiedArn": {
+          "UpdatePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateLambdaVersionAAnZ3AmxjmME6243wRWh6iTU1vdBRnRCP7cc3PJwGIc"
+              "Ref": "UpdatePostLambdaVersionBqsFqBmGqOSphUuwtkONmMtw5sm5YguLJJUtPM2sBn0"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-UpdateLambdaFunctionQualifiedArn"
+              "Name": "sls-Crud-dev-UpdatePostLambdaFunctionQualifiedArn"
             }
           },
-          "DeleteLambdaFunctionQualifiedArn": {
+          "DeletePostLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteLambdaVersionmYQ4tGysnNHgQ4xfMbqkR9MKd3vIVkT8ppLYCxSPdU"
+              "Ref": "DeletePostLambdaVersion59yhDWurcNo3nmf8lSlm5s9kitRpV4cb13VR9B94EU"
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-DeleteLambdaFunctionQualifiedArn"
+              "Name": "sls-Crud-dev-DeletePostLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -1217,7 +995,7 @@
               ]
             },
             "Export": {
-              "Name": "sls-serverless-crud-dev-ServiceEndpoint"
+              "Name": "sls-Crud-dev-ServiceEndpoint"
             }
           }
         }
@@ -1306,192 +1084,113 @@
       },
       "vpc": {}
     },
-    "plugins": [
-      "serverless-offline"
-    ],
+    "custom": {
+      "settings": {
+        "POSTS_TABLE": "posts"
+      }
+    },
     "pluginsData": {},
     "functions": {
-      "create": {
-        "handler": "Crud/create.createpost",
+      "createPost": {
+        "handler": "Methods/createBooks.createPost",
         "events": [
           {
             "http": {
-              "path": "book/create",
+              "path": "post",
               "method": "post",
-              "cors": {
-                "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "POST"
-                ],
-                "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
-                ],
-                "allowCredentials": false
-              },
               "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "serverless-crud-dev-create",
+        "name": "Crud-dev-createPost",
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs8.10",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionbiaE52j9Q0W8XR9DIi9mO5gvLdvYbqpi2FGhitW0RQQ"
+        "versionLogicalId": "CreatePostLambdaVersionuuai02yXSNEqgB4kvJEj7eDLA2p2Yo3660YlR815C0"
       },
-      "readAll": {
-        "handler": "Crud/list.listpost",
+      "getAllPosts": {
+        "handler": "Methods/getBooks.getAllPosts",
         "events": [
           {
             "http": {
-              "path": "books/get",
+              "path": "posts",
               "method": "get",
-              "cors": {
-                "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "GET"
-                ],
-                "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
-                ],
-                "allowCredentials": false
-              },
               "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "serverless-crud-dev-readAll",
+        "name": "Crud-dev-getAllPosts",
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs8.10",
         "vpc": {},
-        "versionLogicalId": "ReadAllLambdaVersionOg26FoxywG7JZN75atjHyb15evlJAsLLaUVsnkwQ"
+        "versionLogicalId": "GetAllPostsLambdaVersionfACeWmYeMMYmE2gQK8FDO16STJIu1L8oHZKyz6PuM"
       },
-      "readOne": {
-        "handler": "Crud/get.getpost",
+      "getPost": {
+        "handler": "Methods/getBook.getPost",
         "events": [
           {
             "http": {
-              "path": "books/name",
+              "path": "post/{id}",
               "method": "get",
-              "cors": {
-                "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "GET"
-                ],
-                "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
-                ],
-                "allowCredentials": false
-              },
               "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "serverless-crud-dev-readOne",
+        "name": "Crud-dev-getPost",
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs8.10",
         "vpc": {},
-        "versionLogicalId": "ReadOneLambdaVersionlDZzLN3Ce0Dg2sYe91kfH5b2QxoNcGvL7JtO17qBZQ"
+        "versionLogicalId": "GetPostLambdaVersionTWV9N5APKkzBUCybGDz6OwSOPb5eoiJ6znCQd7vNUE"
       },
-      "update": {
-        "handler": "Crud/update.updatepost",
+      "updatePost": {
+        "handler": "Methods/updateBook.updatePost",
         "events": [
           {
             "http": {
-              "path": "book/name",
+              "path": "post/{id}",
               "method": "put",
-              "cors": {
-                "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "PUT"
-                ],
-                "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
-                ],
-                "allowCredentials": false
-              },
               "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "serverless-crud-dev-update",
+        "name": "Crud-dev-updatePost",
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs8.10",
         "vpc": {},
-        "versionLogicalId": "UpdateLambdaVersionAAnZ3AmxjmME6243wRWh6iTU1vdBRnRCP7cc3PJwGIc"
+        "versionLogicalId": "UpdatePostLambdaVersionBqsFqBmGqOSphUuwtkONmMtw5sm5YguLJJUtPM2sBn0"
       },
-      "delete": {
-        "handler": "Crud/delete.deletePost",
+      "deletePost": {
+        "handler": "Method/deleteBook.deletePost",
         "events": [
           {
             "http": {
-              "path": "book/name",
+              "path": "post/{id}",
               "method": "delete",
-              "cors": {
-                "origin": "*",
-                "methods": [
-                  "OPTIONS",
-                  "DELETE"
-                ],
-                "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent"
-                ],
-                "allowCredentials": false
-              },
               "integration": "AWS_PROXY"
             }
           }
         ],
-        "name": "serverless-crud-dev-delete",
+        "name": "Crud-dev-deletePost",
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs8.10",
         "vpc": {},
-        "versionLogicalId": "DeleteLambdaVersionmYQ4tGysnNHgQ4xfMbqkR9MKd3vIVkT8ppLYCxSPdU"
+        "versionLogicalId": "DeletePostLambdaVersion59yhDWurcNo3nmf8lSlm5s9kitRpV4cb13VR9B94EU"
       }
     },
     "resources": {
       "Resources": {
-        "TodosDynamoDbTable": {
+        "PostsTable": {
           "Type": "AWS::DynamoDB::Table",
-          "DeletionPolicy": "Retain",
           "Properties": {
             "AttributeDefinitions": [
               {
@@ -1509,7 +1208,7 @@
               "ReadCapacityUnits": 1,
               "WriteCapacityUnits": 1
             },
-            "TableName": "Books"
+            "TableName": "posts"
           }
         }
       },
@@ -1518,7 +1217,10 @@
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yml",
     "initialServerlessConfig": {
-      "service": "serverless-crud",
+      "service": "Crud",
+      "custom": {
+        "$ref": "$[\"service\"][\"custom\"]"
+      },
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
       },
@@ -1527,16 +1229,13 @@
       },
       "resources": {
         "$ref": "$[\"service\"][\"resources\"]"
-      },
-      "plugins": {
-        "$ref": "$[\"service\"][\"plugins\"]"
       }
     },
     "layers": {},
-    "artifact": "C:\\Users\\SWMADHUK\\Documents\\Assignment\\Dynamodb\\aws-serverless\\.serverless\\serverless-crud.zip"
+    "artifact": "C:\\Users\\SWMADHUK\\Documents\\Assignment\\aws-practice\\Crud\\.serverless\\Crud.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/serverless-crud/dev/1647801803539-2022-03-20T18:43:23.539Z",
-    "artifact": "serverless-crud.zip"
+    "artifactDirectoryName": "serverless/Crud/dev/1647971877799-2022-03-22T17:57:57.799Z",
+    "artifact": "Crud.zip"
   }
 }
